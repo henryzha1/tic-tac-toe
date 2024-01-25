@@ -1,19 +1,72 @@
-function Game(gameType, user1, botDifficulty = 0) {
+function Game(gameType, user1, user2, botDifficulty, currentMove, board = []) {
     this.gameType = gameType; //User or BOT
     this.user1 = user1; // X or O
+    this.user2 = user2; //X or O
     this.botDifficulty = botDifficulty; //Easy or Hard (Please select difficulty if User game)
+    this.currentMove = currentMove; //User1, User2, or Bot
+    this.board = board;
 }
 
-Game.prototype.startMatch = function() {
-
-}
 
 Game.prototype.updateMatch = function() {
+    if(this.gameType === "User") {
+        console.log(document.getElementById("board").id);
+        document.getElementById("board").addEventListener("click", (e) => {
+            if(this.isValidMove(e)) {
+                if(this.currentMove === "User1") {
+                    e.target.innerText = this.user1;
+                    this.currentMove = "User2";
+                    this.board[parseInt(e.target.id)-1] = this.user1;
+                    if(this.checkWinner()) {
+                        this.endMatch();
+                    }
+                } else {
+                    e.target.innerText = this.user2;
+                    this.currentMove = "User1";
+                    this.board[parseInt(e.target.id)-1] = this.user2;
+                    if(this.checkWinner()) {
+                        this.endMatch();
+                    }
+                }
+            }
+        });
+    } else {
+
+    }
+}
+
+Game.prototype.isValidMove = function(e) {
+    if(this.board[parseInt(e.target.id) - 1]) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+
+Game.prototype.checkWinner = function() {
+    console.log(this.board);
+    return true;
 
 }
 
-Game.prototype.checkWinner = function() {
+Game.prototype.endMatch = function() {
+    document.getElementById("reset").classList.remove("hidden");
+    document.getElementById("board").remove();
+    document.getElementById("gameTypeOption").selectedIndex = 0;
+}
 
+function createBoard() {
+    let div = document.createElement("div");
+    div.id = "board";
+    document.querySelector("body").append(div);
+    for(let i = 1; i < 10; i++) {
+        let div2 = document.createElement("div");
+        div2.id = "" + i;
+        div2.innerText = "ASDF"
+        document.getElementById("board").append(div2);
+        console.log(div2.id)
+    }
 }
 
 function handleUserGameType(e) {
@@ -55,10 +108,23 @@ function handleStartSubmission() {
     const gameType = document.getElementById("gameTypeOption").value;
     const user1 = document.getElementById("user1Option").value;
     const bot = document.getElementById("botOption").value;
-    document.querySelector("body").append(gameType + " game. User 1: " + user1 + " Bot level: " + bot);
+    let currentMove = "";
+    let user2 = "";
+    if(user1 === "X") {
+        currentMove = "User1";
+        user2 = "O";
+    } else if(gameType === "User") {
+        currentMove = "User2";
+        user2 = "X";
+    } else {
+        currentMove = "Bot";
+        user2 = "bot";
+    }
 
-    const game = new Game(gameType, user1, bot);
-    game.startMatch;
+    console.log(gameType);
+    const game = new Game(gameType, user1, user2, bot, currentMove);
+    createBoard();
+    game.updateMatch();
     //........ START HERE TOMORROW
 
 }
@@ -67,14 +133,18 @@ function resetOptions() {
     document.querySelectorAll(".h").forEach(function(element) {
         element.classList.add("hidden");
     });
+    document.querySelectorAll("select, button#start").forEach((element) => {
+        element.disabled = false;
+    });
     document.getElementById("user1Option").selectedIndex = 0;
     document.getElementById("botOption").selectedIndex = 0;
     document.getElementById("user1").removeEventListener("change", handleUserGameType);
     document.getElementById("bot").removeEventListener("change", handleBotGameType);
     document.getElementById("start").removeEventListener("click", handleStartSubmission);
+    document.getElementById("reset").removeEventListener("click", handleGameTypeSubmission);
 }
 
-function handleGameTypeSubmssion(e) {
+function handleGameTypeSubmission(e) {
     e.preventDefault();
     resetOptions();
 
@@ -93,5 +163,9 @@ function handleGameTypeSubmssion(e) {
 
 
 window.addEventListener("load", function() {
-    document.getElementById("gameType").addEventListener("change", handleGameTypeSubmssion);
+    document.getElementById("gameType").addEventListener("change", handleGameTypeSubmission);
+    document.getElementById("reset").addEventListener("click", () => {
+        resetOptions();
+        document.getElementById("gameType").addEventListener("change", handleGameTypeSubmission);
+    });
 });
