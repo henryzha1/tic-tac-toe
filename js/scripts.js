@@ -13,15 +13,19 @@ Game.prototype.updateMatch = function() {
 }
 
 Game.prototype.checkWinner = function() {
-    
+
 }
 
 function handleUserGameType(e) {
     e.preventDefault();
     document.getElementById("one").innerText = "User 1: ";
-    document.getElementById("two").innerText = "User 2: ";
-
+    if(document.getElementById("gameTypeOption").value === "User") {
+        document.getElementById("two").innerText = "User 2: ";
+    } else {
+        document.getElementById("two").innerText = "Bot: ";
+    }
     const user1Option = document.querySelector("#user1>select").value;
+    
     if(user1Option === "X") {
         document.getElementById("one").append("X");
         document.getElementById("two").append("O");
@@ -43,14 +47,14 @@ function handleBotGameType(e) {
 
 function handleStartSubmission() {
     document.getElementById("start").disabled = true;
-    const gameType = document.querySelector("#gameType>select").value;
+    const gameType = document.getElementById("gameTypeOption").value;
     const user1 = document.getElementById("user1Option").value;
     const bot = document.getElementById("botOption").value;
-    document.querySelector("body").append(gameType + user1 + bot);
+    document.querySelector("body").append(gameType + " game. User 1: " + user1 + " Bot level: " + bot);
 
     const game = new Game(gameType, user1, bot);
     game.startMatch;
-    //........ START HERE
+    //........ START HERE TOMORROW
 
 }
 
