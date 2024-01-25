@@ -1,3 +1,26 @@
 .hidden {
     display: none;
 }
+
+#board {
+    display: flex; /* Enable Flexbox */
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center; /* Center children horizontally in the container */
+    align-items: stretch; /* Stretch children to fit the container's cross size */
+    width: 300px; /* Width of the board */
+    margin: auto; /* Center the board in the page */
+    border: 2px solid black; /* Optional: adds a border around the board */
+}
+
+#board > div {
+    display: flex; /* Enable Flexbox for each row */
+    justify-content: space-between; /* Space out squares within each row */
+}
+
+#board > div > div {
+    flex: 1; /* Each square will take equal space */
+    border: 1px solid grey; /* Optional: adds a border around each square */
+    text-align: center; /* Center the text inside each square */
+    padding: 20px; /* Add some padding for aesthetics */
+    box-sizing: border-box; /* Include padding and border in the width and height */
+}

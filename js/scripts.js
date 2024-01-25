@@ -9,28 +9,32 @@ function Game(gameType, user1, user2, botDifficulty, currentMove, board = []) {
 
 
 Game.prototype.updateMatch = function() {
-    if(this.gameType === "User") {
-        console.log(document.getElementById("board").id);
+    if(this.gameType === "User") { //user match
+        document.getElementById("current").innerText = "Current Move: " + this.currentMove;
         document.getElementById("board").addEventListener("click", (e) => {
+            document.getElementById("status").innerText = " ";
             if(this.isValidMove(e)) {
                 if(this.currentMove === "User1") {
                     e.target.innerText = this.user1;
                     this.currentMove = "User2";
                     this.board[parseInt(e.target.id)-1] = this.user1;
                     if(this.checkWinner()) {
-                        this.endMatch();
+                        endMatch();
                     }
                 } else {
                     e.target.innerText = this.user2;
                     this.currentMove = "User1";
                     this.board[parseInt(e.target.id)-1] = this.user2;
                     if(this.checkWinner()) {
-                        this.endMatch();
+                        endMatch();
                     }
                 }
+                document.getElementById("current").innerText = "Current Move: " + this.currentMove;
+            } else {
+                document.getElementById("status").innerText = "ILLEGAL MOVE. TRY AGAIN";
             }
         });
-    } else {
+    } else { //bot match
 
     }
 }
@@ -44,13 +48,11 @@ Game.prototype.isValidMove = function(e) {
 }
 
 
-Game.prototype.checkWinner = function() {
-    console.log(this.board);
-    return true;
-
+Game.prototype.checkWinner = function() { //need to finish this
+  
 }
 
-Game.prototype.endMatch = function() {
+function endMatch() {
     document.getElementById("reset").classList.remove("hidden");
     document.getElementById("board").remove();
     document.getElementById("gameTypeOption").selectedIndex = 0;
@@ -60,12 +62,17 @@ function createBoard() {
     let div = document.createElement("div");
     div.id = "board";
     document.querySelector("body").append(div);
-    for(let i = 1; i < 10; i++) {
-        let div2 = document.createElement("div");
-        div2.id = "" + i;
-        div2.innerText = "ASDF"
-        document.getElementById("board").append(div2);
-        console.log(div2.id)
+    for(let i = 1; i < 4; i++) {
+        div = document.createElement("div");
+        div.id = "row" + i;
+        document.getElementById("board").append(div);
+        for(let j = 1; j < 4; j++) {
+            div = document.createElement("div");
+            div.id = (i-1)*3 + j;
+            div.innerText = " ";
+            let rowId = "row" + i;
+            document.getElementById(rowId).append(div);
+        }
     }
 }
 
