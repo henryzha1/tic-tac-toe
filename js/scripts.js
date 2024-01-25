@@ -1,4 +1,4 @@
-function Game(gameType, user1, user2, botDifficulty, currentMove, board = []) {
+function Game(gameType, user1, user2, botDifficulty, currentMove, board = [0,0,0,0,0,0,0,0,0]) {
     this.gameType = gameType; //User or BOT
     this.user1 = user1; // X or O
     this.user2 = user2; //X or O
@@ -16,26 +16,96 @@ Game.prototype.updateMatch = function() {
             if(this.isValidMove(e)) {
                 if(this.currentMove === "User1") {
                     e.target.innerText = this.user1;
-                    this.currentMove = "User2";
                     this.board[parseInt(e.target.id)-1] = this.user1;
-                    if(this.checkWinner()) {
-                        endMatch();
+                    let winner = this.currentMove;
+                    this.currentMove = "User2";
+                    document.getElementById("current").innerText = "Current Move: " + this.currentMove;
+                    let check = this.checkWinner()
+                    if(check) {
+                        endMatch(winner, check);
                     }
+                    this.currentMove = "User2";
                 } else {
                     e.target.innerText = this.user2;
-                    this.currentMove = "User1";
                     this.board[parseInt(e.target.id)-1] = this.user2;
-                    if(this.checkWinner()) {
-                        endMatch();
+                    let winner = this.currentMove;
+                    this.currentMove = "User1";
+                    document.getElementById("current").innerText = "Current Move: " + this.currentMove;
+                    let check = this.checkWinner()
+                    if(check) {
+                        endMatch(winner, check);
                     }
                 }
-                document.getElementById("current").innerText = "Current Move: " + this.currentMove;
             } else {
                 document.getElementById("status").innerText = "ILLEGAL MOVE. TRY AGAIN";
             }
         });
     } else { //bot match
+        if(this.currentMove === "Bot") {
+            if(this.botDifficulty === "Easy") {
+                let index = 1;
+                let possibleMoves = [];
+                this.board.forEach((element) => {
+                    if(element === 0) {
+                        possibleMoves.push(index);
+                    }
+                    index++;
+                });
+                
+                let move = "" + possibleMoves[Math.floor(Math.random()*[possibleMoves.length])];
+                document.getElementById(move).innerText = this.user2;
+                this.board[parseInt(move)-1] = this.user2;
+                let winner = this.currentMove;
+                this.currentMove = "User1";
+                let check = this.checkWinner()
+                if(check) {
+                    endMatch(winner, check);
+                }
+            } else { //hard mode
 
+            }
+        }
+        document.getElementById("board").addEventListener("click", (e) => {
+            document.getElementById("status").innerText = " ";
+            let gameOver = false;
+            if(this.isValidMove(e)) {
+                e.target.innerText = this.user1;
+                this.board[parseInt(e.target.id)-1] = this.user1;
+                let winner = this.currentMove;
+                this.currentMove = "Bot";
+                let check = this.checkWinner();
+                if(check) {
+                    gameOver = true;
+                    endMatch(winner, check);
+                }
+            } else {
+                document.getElementById("status").innerText = "ILLEGAL MOVE. TRY AGAIN";
+            } 
+            if(!gameOver && this.currentMove === "Bot") { //bot move
+                if(this.botDifficulty === "Easy") {
+                    let index = 1;
+                    let possibleMoves = [];
+                    this.board.forEach((element) => {
+                        if(element === 0) {
+                            possibleMoves.push(index);
+                        }
+                        index++;
+                    });
+                    
+                    let move = "" + possibleMoves[Math.floor(Math.random()*[possibleMoves.length])];
+                    document.getElementById(move).innerText = this.user2;
+                    this.board[parseInt(move)-1] = this.user2;
+                    let winner = this.currentMove;
+                    this.currentMove = "User1";
+                    let check = this.checkWinner()
+                    if(check) {
+                        endMatch(winner, check);
+                    }
+                } else { //hard mode
+                    
+                }
+            }
+        });
     }
 }
 
@@ -48,17 +118,60 @@ Game.prototype.isValidMove = function(e) {
 }
 
 
-Game.prototype.checkWinner = function() { //need to finish this
-  
+Game.prototype.checkWinner = function() {
+    //winning combinations: 
+    //rows: [1,2,3] [4,5,6] [7,8,9]
+    //columns: [1,4,7] [2,5,8] [3,6,9]
+    //diagonals: [1,5,9] [3,5,7]
+    const winners = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]];
+    let board = winners.map((winner) => {
+        let boardCheck = winner.map((id) => {
+            if(this.board[id-1]) {
+                return this.board[id-1];
+            } else {
+                return 0;
+            }
+        });
+        return boardCheck;
+    });
+    let tie = true;
+    let win = "";
+    let x = board[8];
+    for(let i = 0; i < 8; i++) {
+        if(board[i][0] === board[i][1] && board[i][1] === board[i][2] && board[i][0]) {
+            win = board[i][0];
+            break;
+        } else if(tie) {
+            if(board[i][0] === 0 || board[i][1] === 0 || board[i][2] === 0) {
+                tie = false;
+            }
+        }
+    }
+    if(win) {
+        return win;
+    } else if(tie) {
+        return "tie";
+    } else {
+        return win;
+    }
 }
 
-function endMatch() {
+function endMatch(winner, check) {
     document.getElementById("reset").classList.remove("hidden");
-    document.getElementById("board").remove();
     document.getElementById("gameTypeOption").selectedIndex = 0;
+    document.getElementById("status").innerText = " ";
+    document.getElementById("current").innerText = " ";
+    if(check === "tie") {
+        document.getElementById("winner").innerText = "ITS A TIE!";
+    } else {
+        document.getElementById("winner").innerText = "CONGRADULATIONS " + winner.toUpperCase() + " FOR WINNING!";
+    }
 }
 
 function createBoard() {
+    document.getElementById("current").classList.remove("hidden");
+    document.getElementById("status").classList.remove("hidden");
+    document.getElementById("winner").classList.remove("hidden");
     let div = document.createElement("div");
     div.id = "board";
     document.querySelector("body").append(div);
@@ -112,8 +225,9 @@ function handleStartSubmission() {
     document.querySelectorAll("select, button#start").forEach(function(element) {
         element.disabled = true;
     });
+    document.getElementById("gameType").removeEventListener("change", handleGameTypeSubmission);
     const gameType = document.getElementById("gameTypeOption").value;
-    const user1 = document.getElementById("user1Option").value;
+    let user1 = document.getElementById("user1Option").value;
     const bot = document.getElementById("botOption").value;
     let currentMove = "";
     let user2 = "";
@@ -123,16 +237,19 @@ function handleStartSubmission() {
     } else if(gameType === "User") {
         currentMove = "User2";
         user2 = "X";
-    } else {
+    } else if(gameType === "BOT" && user1 === "O") {
         currentMove = "Bot";
-        user2 = "bot";
+        user2 = "X";
+        user1 = "O";
+    } else if(gameType === "BOT" && user1 === "X") {
+        currentMove = "Bot";
+        user2 = "O";
+        user1 = "X";
     }
 
-    console.log(gameType);
     const game = new Game(gameType, user1, user2, bot, currentMove);
     createBoard();
     game.updateMatch();
-    //........ START HERE TOMORROW
 
 }
 
@@ -143,6 +260,12 @@ function resetOptions() {
     document.querySelectorAll("select, button#start").forEach((element) => {
         element.disabled = false;
     });
+    if(document.getElementById("board")) {    
+        document.getElementById("board").remove();
+        document.getElementById("winner").innerText = " ";
+        document.getElementById("status").innerText = " ";
+        document.getElementById("current").innerText = " ";
+    }
     document.getElementById("user1Option").selectedIndex = 0;
     document.getElementById("botOption").selectedIndex = 0;
     document.getElementById("user1").removeEventListener("change", handleUserGameType);
