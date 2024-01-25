@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link href="css/styles.css" rel="stylesheet" type="text/css">
+    <script src="js/scripts.js"></script>
+</head>
+<body>
+    <h1>TIC TAC TOE GAME</h1>
+    <h2>Please choose your preferences: </h2>
+
+    <form id="gameType">
+        <label for="opp">Who would you like to play against: </label>
+        <select id="opp">
+            <option disabled selected>Please pick an opponent</option>
+            <option>User</option>
+            <option>BOT</option>
+        </select>
+    </form>
+
+    <form id="bot" class="hidden">
+        <label for="botOption">Bot difficulty: </label>
+        <select id="botOption">
+            <option disabled selected>Please select difficulty</option>
+            <option>Easy</option>
+            <option>Hard</option>
+        </select>
+    </form>
+
+    <form id="user1" class="hidden">
+        <label for="user1Option">What would you like to play as: </label>
+        <select id="user1Option">
+            <option disabled selected>Please pick X or O (X goes first)</option>
+            <option>X</option>
+            <option>O</option>
+        </select>
+        <p id="one" class="hidden">User 1: </p>
+        <p id="two" class="hidden">User 2: </p>
+    </form>
+
+
+</body>
+</html>
