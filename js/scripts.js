@@ -20,8 +20,11 @@ function handleUserGameType(e) {
     e.preventDefault();
     document.getElementById("one").innerText = "User 1: ";
     if(document.getElementById("gameTypeOption").value === "User") {
+        document.getElementById("one").innerText = "User 1: ";
         document.getElementById("two").innerText = "User 2: ";
     } else {
+        document.querySelector("form#user1>label").innerText = "Who would you like to play as: ";
+        document.getElementById("one").innerText = "You: ";
         document.getElementById("two").innerText = "Bot: ";
     }
     const user1Option = document.querySelector("#user1>select").value;
@@ -33,20 +36,22 @@ function handleUserGameType(e) {
         document.getElementById("one").append("O");
         document.getElementById("two").append("X");
     }
-    document.getElementById("one").removeAttribute("class");
-    document.getElementById("two").removeAttribute("class");
-    document.getElementById("start").removeAttribute("class");
+    document.getElementById("one").classList.remove("hidden");
+    document.getElementById("two").classList.remove("hidden");
+    document.getElementById("start").classList.remove("hidden");
 }
 
 function handleBotGameType(e) {
     e.preventDefault();
 
-    document.getElementById("user1").removeAttribute("class");
+    document.getElementById("user1").classList.remove("hidden");
     document.getElementById("user1").addEventListener("change", handleUserGameType);
 }
 
 function handleStartSubmission() {
-    document.getElementById("start").disabled = true;
+    document.querySelectorAll("select, button#start").forEach(function(element) {
+        element.disabled = true;
+    });
     const gameType = document.getElementById("gameTypeOption").value;
     const user1 = document.getElementById("user1Option").value;
     const bot = document.getElementById("botOption").value;
@@ -59,15 +64,13 @@ function handleStartSubmission() {
 }
 
 function resetOptions() {
-    document.getElementById("user1").setAttribute("class", "hidden");
-    document.getElementById("user1").removeEventListener("change", handleUserGameType);
+    document.querySelectorAll(".h").forEach(function(element) {
+        element.classList.add("hidden");
+    });
     document.getElementById("user1Option").selectedIndex = 0;
-    document.getElementById("one").setAttribute("class", "hidden");
-    document.getElementById("two").setAttribute("class", "hidden");
-    document.getElementById("bot").setAttribute("class", "hidden");
-    document.getElementById("bot").removeEventListener("change", handleBotGameType);
     document.getElementById("botOption").selectedIndex = 0;
-    document.getElementById("start").setAttribute("class", "hidden");
+    document.getElementById("user1").removeEventListener("change", handleUserGameType);
+    document.getElementById("bot").removeEventListener("change", handleBotGameType);
     document.getElementById("start").removeEventListener("click", handleStartSubmission);
 }
 
@@ -76,10 +79,11 @@ function handleGameTypeSubmssion(e) {
     resetOptions();
 
     if(document.getElementById("gameTypeOption").value === "User") {
-        document.getElementById("user1").removeAttribute("class");
+        document.querySelector("form#user1>label").innerText = "Who would User 1 like to play as: ";
+        document.getElementById("user1").classList.remove("hidden");
         document.getElementById("user1").addEventListener("change", handleUserGameType);
     } else {
-        document.getElementById("bot").removeAttribute("class");
+        document.getElementById("bot").classList.remove("hidden");
         document.getElementById("bot").addEventListener("change", handleBotGameType)
     }
 
