@@ -4,6 +4,18 @@ function Game(gameType, user1, botDifficulty = 0) {
     this.botDifficulty = botDifficulty; //Easy or Hard (Please select difficulty if User game)
 }
 
+Game.prototype.startMatch = function() {
+
+}
+
+Game.prototype.updateMatch = function() {
+
+}
+
+Game.prototype.checkWinner = function() {
+    
+}
+
 function handleUserGameType(e) {
     e.preventDefault();
     document.getElementById("one").innerText = "User 1: ";
@@ -34,14 +46,15 @@ function handleStartSubmission() {
     const gameType = document.querySelector("#gameType>select").value;
     const user1 = document.getElementById("user1Option").value;
     const bot = document.getElementById("botOption").value;
-    
+    document.querySelector("body").append(gameType + user1 + bot);
+
     const game = new Game(gameType, user1, bot);
+    game.startMatch;
+    //........ START HERE
 
 }
 
-function handleGameTypeSubmssion(e) {
-    e.preventDefault();
-
+function resetOptions() {
     document.getElementById("user1").setAttribute("class", "hidden");
     document.getElementById("user1").removeEventListener("change", handleUserGameType);
     document.getElementById("user1Option").selectedIndex = 0;
@@ -52,10 +65,13 @@ function handleGameTypeSubmssion(e) {
     document.getElementById("botOption").selectedIndex = 0;
     document.getElementById("start").setAttribute("class", "hidden");
     document.getElementById("start").removeEventListener("click", handleStartSubmission);
+}
 
+function handleGameTypeSubmssion(e) {
+    e.preventDefault();
+    resetOptions();
 
-    const gameType = document.querySelector("#gameType>select").value;
-    if(gameType === "User") {
+    if(document.querySelector("#gameType>select").value === "User") {
         document.getElementById("user1").removeAttribute("class");
         document.getElementById("user1").addEventListener("change", handleUserGameType);
     } else {

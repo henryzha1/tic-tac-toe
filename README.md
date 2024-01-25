@@ -4,7 +4,7 @@ Step 1: player enters preferences:
 -if user vs user, names of x and o
 -if user vs bot, bot level difficulty, and user x or o
 
-test: after entering preferences, console.log preferences should match
+test: after entering preferences, console.log preferences should match 
 
 Step 2: start the game
 -create a game object
