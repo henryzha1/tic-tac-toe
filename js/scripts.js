@@ -75,7 +75,7 @@ function handleGameTypeSubmssion(e) {
     e.preventDefault();
     resetOptions();
 
-    if(document.querySelector("#gameType>select").value === "User") {
+    if(document.getElementById("gameTypeOption").value === "User") {
         document.getElementById("user1").removeAttribute("class");
         document.getElementById("user1").addEventListener("change", handleUserGameType);
     } else {
